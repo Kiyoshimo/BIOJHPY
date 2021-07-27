@@ -37,9 +37,9 @@ model = AbstractModel() # 这是一个抽象的Pyomo模型
 # declare Param 设置参数
 #-------------------------------------------------------------------------------
 
-P_GR = (read_grid())
+P_GR = (read_grid()) # power plants 读取发电厂数据
 P_I = pyo.RangeSet(1, 6)
-P_YI = pyo.Param(model.I, read_yield("h",1)) #some BUG!
+P_YI = pyo.Param(P_I, read_yield("h",1)) # yield 读取yield
 P_BP = (read_bplant())
 
 ## 公式相关
@@ -56,6 +56,7 @@ model.r=set() #resources资源 (biomass, non-energy resources and energy carrier
 model.c=set() #Regions {1, 2…….48…} 区域
 model.n=set() # Value chain nodes, including biorefinery, biomass plantations, current industrial sector nodes, distribution centres  价值链节点，包括生物精炼厂、生物质种植园、当前工业部门节点、配送中心
 model.t=set() # Time in years {1, 2…} 时间年
+model.kpi=set()	##不确定有没有用 #Key environmental and economic performance indicators {economic, GHGs, water footprint..}关键的环境和经济绩效指标{经济、温室气体、水足迹……}
 model.m=set() # Production mode considering centralised and decentralised modes (CM/DM) at different capacity (large, medium) {CM-L, CM-M… DM-L, DM-M…}考虑不同容量（大容量、中容量）的集中模式和分散模式（CM/DM）（CM-M）
 model.p=set() # Production technologies (e.g. bioethanol, biobutanol, lactic acid, biomethanol…) {1, 2, 3…}生产技术（例如。生物乙醇、生物丁醇、乳酸、biomethanol...){1、2、3……}
 
@@ -96,7 +97,9 @@ model.TI=Constraint(\
 
 
 #fct-4
-
+for n,kpi,t in [model.n,model.kpi,model.t]:
+    model.TRI[n,kpi,t]= Constraint(\
+        expr=sum( model.TIf[kpi,l,r,t]*model.Distance[c,c_,l] *model.CF[r,c,c_,n,l,t] for r in model.r for c in model.c for c_ in c_从何而来 for l in model.l))
 
 #fct-5
 for r,c,c_,n,l,t in [model.r,model.c,model.c_,model.n,model.l,model.t]:
