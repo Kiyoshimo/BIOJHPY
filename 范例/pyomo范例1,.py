@@ -24,8 +24,9 @@ from pyomo.environ import *
 model = ConcreteModel()
 
 # declare decision variables 设置变量
-model.x = Var(domain=NonNegativeReals) # NonNegativeReals代表非0实数
-model.y = Var(domain=NonNegativeReals)
+
+
+
 
 
 # declare objective 设置目标
